@@ -1,17 +1,21 @@
-import { Story, Meta } from '@storybook/html';
-import { ColorPicker, ColorPickerProps } from '../ColorPicker';
+import { Story, Meta } from '@storybook/html'
+import { ColorPicker, ColorPickerProps } from '../ColorPicker'
 
 export default {
   title: 'ColorPicker',
-} as Meta;
+} as Meta
 
-const Template = (args) => {
+const Template: Story<ColorPickerProps> = args => {
   // You can either use a function to create DOM elements or use a plain html string!
   // return `<div>${label}</div>`;
-  return <ColorPicker hsv={[20, 100, 100]} alpha={0}/>;
-};
+  return (
+    <div className="w-52">
+      <ColorPicker hsv={[20, 100, 100]} alpha={0} />
+    </div>
+  ) as Element
+}
 
-export const Basic = Template.bind({});
+export const Basic = Template.bind({})
 // Primary.args = {
 //   primary: true,
 //   label: 'Button',
