@@ -1,8 +1,8 @@
-import { RGB } from "color-convert/conversions"
-import { Component, createMemo } from "solid-js"
-import { Input } from "./Input"
-import { NumberInput } from "./NumberInput"
-import { hsvToRgb, rgbToHex } from "./utils"
+import { Component, createEffect, createMemo } from 'solid-js'
+import { RGB } from 'color-convert/conversions'
+import { Input } from './Input'
+import { NumberInput } from './NumberInput'
+import { hexToRgb, hsvToRgb, isHex, hsvToHex } from './utils'
 
 export interface InputFieldProps {
   hsv: RGB
@@ -11,25 +11,67 @@ export interface InputFieldProps {
 }
 
 export const InputField: Component<InputFieldProps> = props => {
-  const rgb = createMemo(() => hsvToRgb(props.hsv))
-  const hex = createMemo(() => rgbToHex(props.hsv))
+  const $rgb = createMemo(() => hsvToRgb(props.hsv))
+  const $hex = createMemo(() => hsvToHex(props.hsv))
+
+  let hexInput = $hex()
+  let isHexFocus = false
+
+  // Hex
+  createEffect(() => {
+    hexInput = $hex()
+  })
+  const handleHexConfirm = ({ target: { value } }) => {
+    const color = value
+    if (isHex(color)) {
+      console.log('confirm', color, hexToRgb(color))
+      props.onChange && props.onChange(hexToRgb(color))
+    } else {
+      hexInput = $hex()
+    }
+  }
+
+  const handleHexChange = ({ target }) => {
+    const value = target.value
+    hexInput = value
+  }
+
+  const handleHexFocus = () => {
+    isHexFocus = true
+  }
+  const handleHexKeyPress = e => {
+    e.key === 'Enter' && handleHexConfirm(e)
+  }
+
+  const handleHexBlur = e => {
+    isHexFocus = false
+    handleHexConfirm(e)
+  }
 
   return (
     <div className="flex w-full space-x-1">
       <div className="flex flex-col w-16 flex-shrink-0 justify-center items-center">
-        <Input className="pl-3" prefix="#" value={hex()} />
+        <Input
+          className="pl-3"
+          prefix="#"
+          value={isHexFocus ? hexInput : $hex()}
+          onFocus={handleHexFocus}
+          onChange={handleHexChange}
+          onKeyPress={handleHexKeyPress}
+          onBlur={handleHexBlur}
+        />
         <Title>Hex</Title>
       </div>
       <div className="flex flex-col justify-center items-center">
-        <NumberInput value={rgb()[0]} />
+        <NumberInput value={$rgb()[0]} />
         <Title>R</Title>
       </div>
       <div className="flex flex-col justify-center items-center">
-        <NumberInput value={rgb()[1]} />
+        <NumberInput value={$rgb()[1]} />
         <Title>G</Title>
       </div>
       <div className="flex flex-col justify-center items-center">
-        <NumberInput value={rgb()[2]} />
+        <NumberInput value={$rgb()[2]} />
         <Title>B</Title>
       </div>
       <div className="flex flex-col justify-center items-center">
@@ -43,3 +85,4 @@ export const InputField: Component<InputFieldProps> = props => {
 const Title: Component = ({ children }) => {
   return <p className="text-xs mt-1 select-none">{children}</p>
 }
+

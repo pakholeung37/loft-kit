@@ -19,42 +19,45 @@ export const ColorPicker: Component<ColorPickerProps> = ({
   alpha: defaultAlpha = 100,
   hsv: defaultHSV,
 }) => {
-  const [hsv, setHSV] = createSignal(defaultHSV)
-  const [alpha, setAlpha] = createSignal(defaultAlpha)
+  const [$hsv, setHSV] = createSignal(defaultHSV)
+  const [$alpha, setAlpha] = createSignal(defaultAlpha)
 
   const handleChange = (_hsv: HSV | undefined, _alpha: number | undefined) => {
     !isUndefined(_hsv) && setHSV(_hsv)
     !isUndefined(_alpha) && setAlpha(_alpha)
     onChange &&
       onChange(
-        isUndefined(_hsv) ? hsv() : _hsv,
-        isUndefined(_alpha) ? alpha() : _alpha,
+        isUndefined(_hsv) ? $hsv() : _hsv,
+        isUndefined(_alpha) ? $alpha() : _alpha,
       )
   }
   const handleSaturationChange = (hsv: HSV) => handleChange(hsv, undefined)
   const handleHueChange = (hue: number) => {
-    const [, s, v] = hsv()
+    const [, s, v] = $hsv()
     handleChange([hue, s, v], undefined)
   }
   const handleAlphaChange = (alpha: number) => handleChange(undefined, alpha)
-  const handleInputFieldChange = (rgb?: RGB, alpha?: number) =>
+  const handleInputFieldChange = (rgb?: RGB, alpha?: number) => {
+    console.log('input field change', rgb, rgbToHsv(rgb))
     handleChange(rgb ? rgbToHsv(rgb) : undefined, alpha)
+
+  }
 
   return (
     <div className="w-full space-y-2">
-      <Saturation hsv={hsv()} onChange={handleSaturationChange} />
+      <Saturation hsv={$hsv()} onChange={handleSaturationChange} />
       <div className="flex h-6 w-full">
         <div className="flex flex-col justify-between h-6 w-full">
-          <Hue h={hsv()[0]} onChange={handleHueChange} />
-          <Alpha hsv={hsv()} alpha={alpha()} onChange={handleAlphaChange} />
+          <Hue h={$hsv()[0]} onChange={handleHueChange} />
+          <Alpha hsv={$hsv()} alpha={$alpha()} onChange={handleAlphaChange} />
         </div>
         <div className="h-full ml-2">
-          <CheckBoard hsv={hsv()} alpha={alpha()} />
+          <CheckBoard hsv={$hsv()} alpha={$alpha()} />
         </div>
       </div>
       <InputField
-        hsv={hsv()}
-        alpha={alpha()}
+        hsv={$hsv()}
+        alpha={$alpha()}
         onChange={handleInputFieldChange}
       />
     </div>

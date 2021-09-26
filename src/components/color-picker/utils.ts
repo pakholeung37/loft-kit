@@ -26,8 +26,18 @@ export function hslToHsv(color: HSL): HSV {
   return hsl.hsv(color)
 }
 
+export function hsvToHex(color: HSV): HEX {
+  return hsv.hex(color)
+}
+
+const HEX3 = /(^[0-9A-F]{6}$)/i
+const HEX6 = /(^[0-9A-F]{3}$)/i
 export function isHex(color: string) {
-  return /(^[0-9A-F]{6}$)|(^[0-9A-F]{3}$)/i.test(color)
+  return HEX3.test(color) || HEX6.test(color)
+}
+
+export function normalizeHex(color: string) {
+  if(HEX3.test(color)) return
 }
 
 export const transparentBgUrl =
