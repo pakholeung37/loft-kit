@@ -38,7 +38,6 @@ export const ColorPicker: Component<ColorPickerProps> = ({
   }
   const handleAlphaChange = (alpha: number) => handleChange(undefined, alpha)
   const handleInputFieldChange = (rgb?: RGB, alpha?: number) => {
-    console.log('input field change', rgb, rgbToHsv(rgb))
     handleChange(rgb ? rgbToHsv(rgb) : undefined, alpha)
 
   }
