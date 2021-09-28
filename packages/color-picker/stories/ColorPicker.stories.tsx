@@ -1,5 +1,5 @@
 import { Story, Meta } from '@storybook/html'
-import { ColorPicker, ColorPickerProps } from '../ColorPicker'
+import { ColorPicker, ColorPickerProps } from '../src'
 
 export default {
   title: 'ColorPicker',
