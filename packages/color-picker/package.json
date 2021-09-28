@@ -1,6 +1,6 @@
 {
   "name": "@loft-kit/color-picker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "scripts": {
     "build": "concurrently yarn:build:*",
